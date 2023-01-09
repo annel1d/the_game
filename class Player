@@ -1,0 +1,31 @@
+class Player(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(player_group, all_sprites)
+        self.image = player_image
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+    def xodit(self, turn):
+        x = player.rect.x
+        y = player.rect.y
+        X1 = [' ', '%', '@', '&']
+        Y1 = ['%', '&']
+        if turn == 'Вверх':
+            if level_map[(y + 38) // 20][(x + 9) // 20] in Y1:
+                player.rect.y -= 1
+        if turn == 'Вниз':
+            if level_map[(y + 40) // 20][(x + 9) // 20] in Y1:
+                player.rect.y += 1
+        if turn == 'Вправо':
+            if ((level_map[y // 20][(x + 18) // 20] in X1) and
+                    (level_map[(y + 20) // 20][(x + 18) // 20] in X1) and
+                    ((level_map[(y + 40) // 20][(x + 18) // 20] != " ") or (
+                            level_map[(y + 20) // 20][(x + 18) // 20] == "&"))):
+                player.rect.x += 1
+        if turn == 'Влево':
+            if x - 1 >= 0:
+                if ((level_map[y // 20][(x + 2) // 20] in X1) and
+                        (level_map[(y + 20) // 20][(x + 2) // 20] in X1) and
+                        ((level_map[(y + 40) // 20][(x + 2) // 20] != " ") or (
+                                level_map[(y + 20) // 20][(x + 2) // 20] == "&"))):
+                    player.rect.x -= 1
