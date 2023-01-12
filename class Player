@@ -10,22 +10,36 @@ class Player(pygame.sprite.Sprite):
         y = player.rect.y
         X1 = [' ', '%', '@', '&']
         Y1 = ['%', '&']
-        if turn == 'Вверх':
-            if level_map[(y + 38) // 20][(x + 9) // 20] in Y1:
-                player.rect.y -= 1
-        if turn == 'Вниз':
-            if level_map[(y + 40) // 20][(x + 9) // 20] in Y1:
-                player.rect.y += 1
         if turn == 'Вправо':
+            self.image = load_image('main_guy_right_going.png')
             if ((level_map[y // 20][(x + 18) // 20] in X1) and
                     (level_map[(y + 20) // 20][(x + 18) // 20] in X1) and
                     ((level_map[(y + 40) // 20][(x + 18) // 20] != " ") or (
                             level_map[(y + 20) // 20][(x + 18) // 20] == "&"))):
                 player.rect.x += 1
         if turn == 'Влево':
+            self.image = load_image('main_guy_left_going.png')
             if x - 1 >= 0:
                 if ((level_map[y // 20][(x + 2) // 20] in X1) and
                         (level_map[(y + 20) // 20][(x + 2) // 20] in X1) and
                         ((level_map[(y + 40) // 20][(x + 2) // 20] != " ") or (
                                 level_map[(y + 20) // 20][(x + 2) // 20] == "&"))):
                     player.rect.x -= 1
+        if turn == 'Вверх':
+            if level_map[(y + 38) // 20][(x + 9) // 20] in Y1:
+                player.rect.y -= 1
+        if turn == 'Вниз':
+            if level_map[(y + 40) // 20][(x + 9) // 20] in Y1:
+                player.rect.y += 1
+
+    def stoit(self, turn):
+        if turn == "Вправо":
+            self.image = load_image('main_guy_right_stand.png')
+        if turn == "Влево":
+            self.image = load_image('main_guy_left_stand.png')
+        if turn == "Вверх" or turn == "Вниз":
+            self.image = load_image('main_guy.png')
+        if turn == "ВправоИ":
+            self.image = load_image('main_guy_right_going.png')
+        if turn == "ВлевоИ":
+            self.image = load_image('main_guy_left_going.png')
