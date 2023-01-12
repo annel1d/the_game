@@ -1,0 +1,8 @@
+def music(how):
+    if how == "Трава":
+        s = pygame.mixer.Sound("sounds/xodba.mp3")
+        s.play()
+    elif how == "Main":
+        s = pygame.mixer.Sound("sounds/Main.mp3")
+        s.set_volume(0.2)
+        s.play()
