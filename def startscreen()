@@ -53,19 +53,8 @@ def start_screen():
         screen.blit(string_rendered, intro_rect)
     while True:
         for event in pygame.event.get():
-            manager.process_events(event)
             if event.type == pygame.QUIT:
-                conf_dialog1 = pygame_gui.windows.UIConfirmationDialog(
-                    rect=pygame.Rect((450, 250), (300, 200)),
-                    manager=manager,
-                    window_title="Подтверждение",
-                    action_long_desc="Вы уверены, что хотите выйти?",
-                    action_short_name="OK",
-                    blocking=True
-                )
-            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
-                pygame.quit()
-                sys.exit()
+                terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     fon = pygame.transform.scale(load_image(f'fons/{number}.png'), (1200, 700))
@@ -112,6 +101,4 @@ def start_screen():
                 if event.key == pygame.K_RETURN:
                     pygame.mixer.stop()
                     return
-        manager.update(time_delta)
-        manager.draw_ui(screen)
         pygame.display.flip()
