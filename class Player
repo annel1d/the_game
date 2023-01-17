@@ -4,42 +4,76 @@ class Player(pygame.sprite.Sprite):
         self.image = player_image
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+        self.Go_pause = False
+        self.Animation_fram_L = [load_image('main_guy_left_stand.png'), load_image('main_guy_left_going.png'),
+                                 load_image('main_guy_left_going1.png')]
+        self.Animation_fram_R = [load_image('main_guy_right_stand.png'), load_image('main_guy_right_going.png'),
+                                 load_image('main_guy_right_going1.png')]
 
-    def xodit(self, turn):
+    def xodit(self, turn, counter):
         x = player.rect.x
         y = player.rect.y
-        X1 = [' ', '%', '@', '&']
-        Y1 = ['%', '&']
-        if turn == 'Вправо':
-            self.image = load_image('main_guy_right_going.png')
-            if ((level_map[y // 20][(x + 18) // 20] in X1) and
-                    (level_map[(y + 20) // 20][(x + 18) // 20] in X1) and
-                    ((level_map[(y + 40) // 20][(x + 18) // 20] != " ") or (
-                            level_map[(y + 20) // 20][(x + 18) // 20] == "&"))):
-                player.rect.x += 1
-        if turn == 'Влево':
-            self.image = load_image('main_guy_left_going.png')
-            if x - 1 >= 0:
-                if ((level_map[y // 20][(x + 2) // 20] in X1) and
-                        (level_map[(y + 20) // 20][(x + 2) // 20] in X1) and
-                        ((level_map[(y + 40) // 20][(x + 2) // 20] != " ") or (
-                                level_map[(y + 20) // 20][(x + 2) // 20] == "&"))):
-                    player.rect.x -= 1
-        if turn == 'Вверх':
-            if level_map[(y + 38) // 20][(x + 9) // 20] in Y1:
-                player.rect.y -= 1
-        if turn == 'Вниз':
-            if level_map[(y + 40) // 20][(x + 9) // 20] in Y1:
-                player.rect.y += 1
+        X1 = [' ', '%', '@', '&', '}', '{', '-', '|', '?', 'z', 'x', 'c', '1', '2', '3']
+        Y1 = ['%', '&', '|']
+        Z1 = ['?']
+        if not self.Go_pause:
+            if turn == 'Вправо':
+                self.image = self.Animation_fram_R[int(counter)]
+                if ((level_map[y // 20][(x + 18) // 20] in X1) and
+                        (level_map[(y + 20) // 20][(x + 18) // 20] in X1) and
+                        ((level_map[(y + 40) // 20][(x + 18) // 20] != " ") or (
+                                level_map[(y + 20) // 20][(x + 18) // 20] == "&"))):
+                    if level_map[(y + 20) // 20][(x + 18) // 20] == "1":
+                        if door1.check():
+                            player.rect.x += 2
+                    elif level_map[(y + 20) // 20][(x + 18) // 20] == "2":
+                        if door2.check():
+                            player.rect.x += 2
+                    elif level_map[(y + 20) // 20][(x + 18) // 20] == "3":
+                        if door3.check():
+                            player.rect.x += 2
+                    else:
+                        player.rect.x += 2
+            if turn == 'Влево':
+                self.image = self.Animation_fram_L[int(counter)]
+                if x - 2 >= 0:
+                    if ((level_map[y // 20][(x + 2) // 20] in X1) and
+                            (level_map[(y + 20) // 20][(x + 2) // 20] in X1) and
+                            ((level_map[(y + 40) // 20][(x + 2) // 20] != " ") or (
+                                    level_map[(y + 20) // 20][(x + 2) // 20] == "&"))):
+                        if level_map[(y + 20) // 20][(x + 2) // 20] == "1":
+                            if door1.check():
+                                player.rect.x -= 2
+                        elif level_map[(y + 20) // 20][(x + 2) // 20] == "2":
+                            if door2.check():
+                                player.rect.x -= 2
+                        elif level_map[(y + 20) // 20][(x + 2) // 20] == "3":
+                            if door3.check():
+                                player.rect.x -= 2
+                        else:
+                            player.rect.x -= 2
+            if turn == 'Вверх':
+                if level_map[(y + 38) // 20][(x + 9) // 20] in Y1:
+                    player.rect.y -= 2
+            if turn == 'Вниз':
+                if level_map[(y + 40) // 20][(x + 9) // 20] in Y1:
+                    player.rect.y += 2
 
     def stoit(self, turn):
-        if turn == "Вправо":
-            self.image = load_image('main_guy_right_stand.png')
-        if turn == "Влево":
-            self.image = load_image('main_guy_left_stand.png')
-        if turn == "Вверх" or turn == "Вниз":
-            self.image = load_image('main_guy.png')
-        if turn == "ВправоИ":
-            self.image = load_image('main_guy_right_going.png')
-        if turn == "ВлевоИ":
-            self.image = load_image('main_guy_left_going.png')
+        if not self.Go_pause:
+            if turn == "Вправо":
+                self.image = load_image('main_guy_right_stand.png')
+            if turn == "Влево":
+                self.image = load_image('main_guy_left_stand.png')
+            if turn == "Вверх" or turn == "Вниз":
+                self.image = load_image('main_guy.png')
+            if turn == "ВправоИ":
+                self.image = load_image('main_guy_right_going.png')
+            if turn == "ВлевоИ":
+                self.image = load_image('main_guy_left_going.png')
+
+    def pause(self):
+        self.Go_pause = not self.Go_pause
+
+    def is_paused(self):
+        return self.Go_pause
