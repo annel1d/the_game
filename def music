@@ -1,8 +1,15 @@
-def music(how):
-    if how == "Трава":
-        s = pygame.mixer.Sound("sounds/xodba.mp3")
-        s.play()
-    elif how == "Main":
-        s = pygame.mixer.Sound("sounds/Main.mp3")
-        s.set_volume(0.2)
-        s.play()
+def music(how, is_paused):
+    if not is_paused:
+        if how == "Трава":
+            s = pygame.mixer.Sound("sounds/xodba.mp3")
+            s.play()
+        elif how == "Main":
+            s = pygame.mixer.Sound("sounds/Main.mp3")
+            s.set_volume(0.2)
+            s.play()
+        elif how == "button":
+            s = pygame.mixer.Sound("sounds/button.mp3")
+            s.set_volume(0.5)
+            s.play()
+    else:
+        pygame.mixer.stop()
