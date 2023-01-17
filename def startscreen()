@@ -1,28 +1,117 @@
 def start_screen():
-    intro_text = ["ЗАСТАВКА", "",
-                  "Правила игры",
-                  "Тыкните и после появления надписи ->",
-                  "-Ввод названия карты-",
-                  "введите название",
-                  "И наслаждайтесь!"]
+    count = 0
+    connection = create_connection("main.db")
+    cursor = connection.cursor()
+    otv = cursor.execute(f"""SELECT * FROM records""").fetchall()
+    intro_text = ["                               Цифровое спасение", "",
+                  "Кусочек истории: Вы с другом пошли в игровой центр поиграть",
+                  "  Но поломка в игровом автомате заточила вас в нём!", "",
+                  "       Ваша цель: выбраться из игрового автомата", "Жёлтые квадратики - выход из 8-бит мира",
+                  "",
+                  "                    Нажмите ENTER для продолжения",
+                  "                                И наслаждайтесь!",
+                  "", "", "", "", "стрелка влево - управление", 'стрелка вниз - рекорды']
+    upr_text = ["  Управление: ESC - пауза ",
+                "  wasd или стрелочки - движение",
+                "На кнопки в игре нужно нажимать мышкой - тогда что то произойдёт",
+                "", "", "",
+                "(ПАУЗА ОСТАНАВЛИВАЕТ ИГРУ НО НЕ ВРЕМЯ)",
+                "(так сделано по причине того что можно обманывать игру паузой)",
+                "", "", "", "", "", "", "стрелка вправо - вступление", 'стрелка вниз - рекорды']
+    rec_text =["Результаты ваших игр в секундах!", "", "стрелка вправо - вступление",
+               "стрелка влево - управление", "", "Номер. Дата - Время", "",]
+    for i in otv:
+        i = list(i)
+        if (i[0]) >= 11 and count == 0:
+            count += 1
+            rec_text.append("Много вы сыграли... Остальные рекорды есть в базе :0")
+            break
+        i = str(i)
+        i = i.replace("[", "")
+        i = i.replace("]", "")
+        i = i.replace("(", "")
+        i = i.replace(")", "")
+        i = i.replace("'", "")
+        i = i.replace(",", "")
+        i = i[:1] + ". " + i[1:12] + " - " + i[12:]
+        rec_text.append(str(i))
     number = str(random.randint(1, 30))
-    fon = pygame.transform.scale(load_image(number + ".png"), (1200, 700))
+    fon = pygame.transform.scale(load_image(f'fons/{number}.png'), (1200, 700))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
-    text_coord = 5
+    music("Main", player.is_paused())
+    pygame.font.init()
+    font = pygame.font.Font("data/font/Pixel_Times.ttf", 22)
+    text_coord = 10
+    time_delta = clock.tick(60) / 1000.0
     for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('white'))
+        string_rendered = font.render(line, True, pygame.Color((0, 0, 0)))
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
-        intro_rect.x = 10
+        intro_rect.x = 300
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     while True:
         for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
-                terminate()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
-                return  # начинаем игру
+                conf_dialog1 = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((450, 250), (300, 200)),
+                    manager=manager,
+                    window_title="Подтверждение",
+                    action_long_desc="Вы уверены, что хотите выйти?",
+                    action_short_name="OK",
+                    blocking=True
+                )
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    fon = pygame.transform.scale(load_image(f'fons/{number}.png'), (1200, 700))
+                    screen.blit(fon, (0, 0))
+                    pygame.font.init()
+                    font = pygame.font.Font("data/font/Pixel_Times.ttf", 22)
+                    text_coord = 10
+                    for line in upr_text:
+                        string_rendered = font.render(line, True, pygame.Color((0, 0, 0)))
+                        intro_rect = string_rendered.get_rect()
+                        text_coord += 10
+                        intro_rect.top = text_coord
+                        intro_rect.x = 300
+                        text_coord += intro_rect.height
+                        screen.blit(string_rendered, intro_rect)
+                if event.key == pygame.K_RIGHT:
+                    fon = pygame.transform.scale(load_image(f'fons/{number}.png'), (1200, 700))
+                    screen.blit(fon, (0, 0))
+                    pygame.font.init()
+                    font = pygame.font.Font("data/font/Pixel_Times.ttf", 22)
+                    text_coord = 10
+                    for line in intro_text:
+                        string_rendered = font.render(line, True, pygame.Color((0, 0, 0)))
+                        intro_rect = string_rendered.get_rect()
+                        text_coord += 10
+                        intro_rect.top = text_coord
+                        intro_rect.x = 300
+                        text_coord += intro_rect.height
+                        screen.blit(string_rendered, intro_rect)
+                if event.key == pygame.K_DOWN:
+                    fon = pygame.transform.scale(load_image(f'fons/{number}.png'), (1200, 700))
+                    screen.blit(fon, (0, 0))
+                    pygame.font.init()
+                    font = pygame.font.Font("data/font/Pixel_Times.ttf", 22)
+                    text_coord = 10
+                    for line in rec_text:
+                        string_rendered = font.render(line, True, pygame.Color((0, 0, 0)))
+                        intro_rect = string_rendered.get_rect()
+                        text_coord += 10
+                        intro_rect.top = text_coord
+                        intro_rect.x = 300
+                        text_coord += intro_rect.height
+                        screen.blit(string_rendered, intro_rect)
+                if event.key == pygame.K_RETURN:
+                    pygame.mixer.stop()
+                    return
+        manager.update(time_delta)
+        manager.draw_ui(screen)
         pygame.display.flip()
